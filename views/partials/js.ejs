@@ -1,0 +1,45 @@
+<script src="/socket.io/socket.io.js">
+</script>
+
+<script>
+    var socket = io();
+
+    socket.on('message', function(msg) {
+
+        Messenger.options = {
+            extraClasses: "messenger-fixed messenger-on-bottom  messenger-on-right",
+            theme: "flat"
+        }
+
+        Messenger().post({
+            message: msg.msg,
+            type: msg.type
+        })
+
+    });
+</script>
+
+<!-- JavaScript files-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/popper.js/umd/popper.min.js">
+</script>
+<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendor/jquery.cookie/jquery.cookie.js">
+</script>
+<script src="/vendor/chart.js/Chart.min.js"></script>
+<script src="/vendor/jquery-validation/jquery.validate.min.js"></script>
+<script src="/js/front.js"></script>
+
+
+<!-- Messenger-->
+<script src="https://d19m59y37dris4.cloudfront.net/dark-admin-premium/1-4-5/vendor/messenger-hubspot/build/js/messenger.min.js"></script>
+<script src="https://d19m59y37dris4.cloudfront.net/dark-admin-premium/1-4-5/vendor/messenger-hubspot/build/js/messenger-theme-flat.js"></script>
+
+<%   if (message != "") { %>
+    <script>
+        Messenger().post({
+            message: "<%= message %>",
+            type: "<%= messageType %>"
+        })
+    </script>
+    <% }%>

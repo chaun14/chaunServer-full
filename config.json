@@ -1,0 +1,12 @@
+{
+    "passwordHash": "",
+    "secret": "you need to change me",
+    "debug": false,
+    "database": {
+        "host": "localhost",
+        "port": "3306",
+        "database": "",
+        "user": "",
+        "password": ""
+    }
+}

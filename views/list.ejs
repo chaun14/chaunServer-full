@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        AlternativeAPI |
+        <%= type %>list manager</title>
+    <meta name="description" content="Manage the <%= type %>List">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <meta name="theme-color" content="#22252a">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Custom Font Icons CSS-->
+    <link rel="stylesheet" href="/css/font.css">
+    <!-- Google fonts - Muli-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="/css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="/css/custom.css">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <!-- Tweaks for older IEs-->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+
+</head>
+
+<body>
+    <header class="header">
+        <%- include('partials/headbar'); %>
+    </header>
+
+    <div class="d-flex align-items-stretch">
+        <!-- Sidebar Navigation-->
+        <nav id="sidebar">
+            <!-- Sidebar Header-->
+            <div class="sidebar-header d-flex align-items-center">
+
+            </div>
+            <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
+            <ul class="list-unstyled">
+                <li>
+                    <a href="/dashboard"> <i class="icon-home"></i>Dashboard </a>
+                </li>
+
+                <li>
+                    <a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i class="fa fa-list" aria-hidden="true"></i>Lists </a>
+                    <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
+                        <% if(type == "ignore") {%>
+
+                            <li class="active"><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star" aria-hidden="true"></i>Ignore</a></li>
+
+                            <% } else {%>
+                                <li><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star" aria-hidden="true"></i>Ignore</a></li>
+                                <li class="active"><a href="/dashboard/manage/deleteList/"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</a></li>
+                                <% } %>
+
+                    </ul>
+                </li>
+                <li>
+                    <a href="/dashboard/manage/status"><i class="fa fa-play" aria-hidden="true"></i>Status </a>
+                </li>
+
+            </ul>
+
+        </nav>
+        <!-- Sidebar Navigation end-->
+
+
+
+
+        <div class="page-content">
+            <div class="page-header">
+                <div class="container-fluid">
+                    <h2 class="h5 no-margin-bottom">
+                        <%= type %> list</h2>
+                </div>
+            </div>
+
+
+            <!--  section list ignore list-->
+            <section class="no-padding-bottom">
+                <div class="container-fluid">
+
+                    <div class="block margin-bottom-sm">
+                        <div class="title"><strong>Manage <%= type %> list</strong></div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Type</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% let i = 0 %>
+                                        <% for (let item of list) { %>
+                                            <% i = i + 1 %>
+                                                <tr>
+                                                    <th scope="row">
+                                                        <%= item %><br></th>
+                                                    <td>fichier</td>
+                                                    <td>
+                                                        <div class="col-lg-4 d-flex align-items-center">
+                                                            <form action="/dashboard/manage/<%= type %>list/delete" method="post">
+                                                                <input type="hidden" name="file" value="<%= item %>" />
+                                                                <button type="submit" value="delete"><i class="fa fa-trash"></i></button>
+                                                            </form>
+                                                            <button type="submit" data-toggle="modal" data-target="#editItem<%= i %>"><i class="fa fa-pencil"></i></button>
+
+
+                                                            <div id="editItem<%= i %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
+                                                                <div role="document" class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header"><strong id="exampleModalLabel" class="modal-title">Edit item</strong>
+                                                                            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <p>Edit an item.</p>
+                                                                            <form action="/dashboard/manage/<%= type %>list/edit" method="post" class="form-validate mb-4">
+                                                                                <div class="form-group">
+                                                                                    <input type="hidden" name="oldItem" value="<%= item %>" />
+
+                                                                                    <label>path</label>
+                                                                                    <input type="text" name="newItem" value="<%= item %>" placeholder="<%= item %>" class="form-control" required data-msg="Please enter a path to a file">
+                                                                                </div>
+
+
+                                                                                <div class="modal-footer">
+                                                                                    <div class="form-group">
+                                                                                        <input type="submit" value="Save" class="btn btn-primary">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </td>
+
+                                                </tr>
+                                                <% }%>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!--  section list manager-->
+            <section class="no-padding-bottom">
+
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <!--  add item -->
+                        <div class="col-lg-6">
+                            <div class="messages-block block">
+                                <div class="title"><strong class="d-block">Add item</strong><span class="d-block">Add files to the <%= type %> list</span></div>
+
+                                <div class="block-body">
+                                    <form method="post" action="/dashboard/manage/<%= type %>List/add" class="form-validate mb-4">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Path</label>
+                                            <input type="text" placeholder="options.txt" name="file" class="form-control" required data-msg="Please enter a path to a file" class="input-material">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="Add" class="btn btn-primary">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--  import / export -->
+                        <div class="col-lg-6">
+                            <div class="messages-block block">
+                                <div class="title"><strong class="d-block">Export</strong><span class="d-block">Export your list to a json file.</span>
+                                    <form action="/dashboard/manage/<%= type %>list/export" method="post">
+                                        <input type="submit" value="Export" class="btn btn-primary">
+                                    </form>
+                                </div>
+
+                                <div class="title"><strong class="d-block">Import</strong><span class="d-block">Import your old .json file.</span>
+                                    <form action="/dashboard/manage/<%= type %>list/import" method="post" accept=".json" encType="multipart/form-data">
+
+                                        <input type="file" id="file" name="file" accept=".json" value="Import">
+                                        <input type="submit" value="Submit" class="btn btn-primary">
+
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <%- include('partials/footer'); %>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <%- include('partials/js'); %>
+
+</html>

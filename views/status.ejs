@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Status manager</title>
+    <meta name="description" content="Manage the status">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <meta name="theme-color" content="#22252a">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+    <!-- Custom Font Icons CSS-->
+    <link rel="stylesheet" href="/css/font.css">
+    <!-- Google fonts - Muli-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="/css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="/css/custom.css">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <!-- Tweaks for older IEs-->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+
+</head>
+
+<body>
+    <header class="header">
+        <%- include('partials/headbar'); %>
+    </header>
+
+    <div class="d-flex align-items-stretch">
+        <!-- Sidebar Navigation-->
+        <nav id="sidebar">
+            <!-- Sidebar Header-->
+            <div class="sidebar-header d-flex align-items-center">
+
+            </div>
+            <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
+            <ul class="list-unstyled">
+                <li>
+                    <a href="/dashboard"> <i class="icon-home"></i>Dashboard </a>
+                </li>
+
+                <li>
+                    <a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i class="fa fa-list" aria-hidden="true"></i>Lists </a>
+                    <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
+
+                        <li><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star" aria-hidden="true"></i>Ignore</a></li>
+
+
+                    </ul>
+                </li>
+                <li class="active">
+                    <a href="/dashboard/manage/status"><i class="fa fa-play" aria-hidden="true"></i>Status </a>
+                </li>
+
+            </ul>
+
+        </nav>
+        <!-- Sidebar Navigation end-->
+
+
+
+
+        <div class="page-content">
+            <div class="page-header">
+                <div class="container-fluid">
+                    <h2 class="h5 no-margin-bottom">
+                        Launcher status</h2>
+                </div>
+            </div>
+
+
+            <!--  section list ignore list-->
+            <section class="no-padding-bottom">
+                <div class="container-fluid">
+
+                    <div class="checklist-block block">
+                        <div class="title"><strong>Maintenance mode</strong></div>
+                        <div class="row d-flex align-items-center ">
+
+                            <form action="/dashboard/manage/status/edit" method="post" class="form-inline">
+
+
+                                <% if(status == "") {%>
+                                    <label class="switch mr-sm-3">
+                                                 <input id="checkbox" type="checkbox" value="ok" name="checkbox" onclick="showReason()">
+                                                 <span class="slider round"></span>
+                                               </label>
+
+                                    <div class="form-group">
+                                        <input type="text" id="reason" name="reason" value="" placeholder="reason" class="mr-sm-3 form-control">
+                                    </div>
+
+                                    <% } else { %>
+                                        <label class="switch mr-sm-3">
+                                        <input id="checkbox" type="checkbox" value="ok" name="checkbox" onclick="showReason()" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+
+                                        <div class="form-group">
+                                            <input type="text" id="reason" name="reason" value="<%= status %>" placeholder="reason" class="mr-sm-3 form-control">
+                                        </div>
+                                        <% } %>
+
+
+                                            <div class="form-group">
+                                                <input type="submit" value="Submit" class="btn btn-primary">
+
+
+                                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <%- include('partials/footer'); %>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <%- include('partials/js'); %>
+
+        <script>
+            function showReason() {
+
+                var checkBox = document.getElementById("checkbox");
+                // Get the output text
+                var text = document.getElementById("reason");
+
+                // If the checkbox is checked, display the output text
+                if (checkBox.checked == true) {
+                    text.style.display = "block";
+                } else {
+                    text.style.display = "none";
+                }
+            }
+        </script>
+        <script>
+            var checkBox = document.getElementById("checkbox");
+            // Get the output text
+            var text = document.getElementById("reason");
+            if (checkBox.checked == true) {
+                text.style.display = "block";
+            } else {
+                text.style.display = "none";
+            }
+        </script>
+
+
+</html>
