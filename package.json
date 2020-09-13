@@ -42,7 +42,7 @@
         "md5-file": "^5.0.0",
         "morgan": "^1.10.0",
         "mysql": "^2.18.1",
-        "node-fetch": "^2.6.0",
+        "node-fetch": "^2.6.1",
         "node-unzip-2": "^0.2.8",
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
