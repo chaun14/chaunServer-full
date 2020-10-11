@@ -1,5 +1,5 @@
 {
-    "name": "dev-chaunlauncher_server-full-asgardia",
+    "name": "chaunlauncher_server-full",
     "version": "2.0.0",
     "description": "⚡Powerfull NodeJS download server with dashboard (built for minecraft launchers)",
     "main": "index.js",
