@@ -1,28 +1,26 @@
 const express = require('express');
 const fs = require('fs')
 const router = express.Router();
-const passport = require('passport');
+
+
+const db = require("../db")
 const list = require("../modules/listManager.js")
 const status = require("../modules/statusManager.js")
-const sql = require("../modules/sql.js")
-const utils = require("../modules/utils.js")
-const fetch = require('node-fetch');
-const unzip = require('node-unzip-2');
-const rimraf = require("rimraf");
-
+const gameFilesCache = require("../modules/gameFileManager")
+const javaFilesCache = require("../modules/javaFileManager")
+const fileManager = require("../modules/filesManager")
 const config = require("../config.json")
 const debug = config.debug
 
-const request = require('request');
-const progress = require('request-progress');
 
 
 
-router.get('/', function(req, res) {
+router.get('/', async function(req, res) {
 
     if (req.session.passport == undefined) {
         res.redirect("/login")
-    } else
+    } else {
+        /*
         sql.getTodayStats((err, results) => {
 
             const ignoredItemNumber = list.getIgnoreList().size
@@ -39,35 +37,72 @@ router.get('/', function(req, res) {
                 timeAverage = timeAverage.toFixed(3) // round
             }
 
-            res.render("dashboard", { user: req.session.passport, message: "", messageType: "success", todayStats: results, timeAverage: timeAverage, ignoredItemNumber: ignoredItemNumber, deletedItemNumber: deletedItemNumber })
         })
 
+*/
 
+        const ignoredItemNumber = list.getIgnoreList().size
+        const gameFilesCount = gameFilesCache.getFiles().size
+        const javaFilesCount = javaFilesCache.getFiles().size
 
+        //stats
+        let stats = await db.stats.findAll({
+            order: [
+                ['date', 'DESC'],
+            ],
+            limit: 31
+        })
+
+        res.render("dashboard", { user: req.session.passport, stats: stats, message: "", messageType: "success", gameFiles: gameFilesCount, javaFiles: javaFilesCount, ignoredItemNumber: ignoredItemNumber })
+    }
 });
 
 
+router.post('/manage/refresh', async function(req, res) {
+    if (req.session.passport == undefined) {
+        res.redirect("/login")
+    } else {
+        await fileManager.loadFiles()
+
+        const ignoredItemNumber = list.getIgnoreList().size
+        const gameFilesCount = gameFilesCache.getFiles().size
+        const javaFilesCount = javaFilesCache.getFiles().size
+
+        //stats
+        let stats = await db.stats.findAll({
+            order: [
+                ['date', 'DESC'],
+            ],
+            limit: 31
+        })
+
+        res.render("dashboard", { user: req.session.passport, stats: stats, message: "Refresh finished", messageType: "success", todayStats: "none", timeAverage: "none", gameFiles: gameFilesCount, javaFiles: javaFilesCount, ignoredItemNumber: ignoredItemNumber })
+
+    }
+})
 
 
 
 /* ######################################### Begin statusManager ######################################### */
 router.get('/manage/status', async function(req, res) {
-    let actualStatus = status.getStatus()
+
 
 
     if (req.session.passport == undefined) {
         res.redirect("/login")
     } else {
-        console.log(actualStatus)
+        let actualStatus = status.getStatus()
+        let isMaintenanceActive = status.isActive()
 
 
-        res.render("status", { status: actualStatus, message: "", messageType: "success" })
+
+        res.render("status", { status: actualStatus, isActive: isMaintenanceActive, message: "", messageType: "success" })
     }
 })
 
-router.post('/manage/status/edit', async function(req, res) {
+router.post('/manage/status', async function(req, res) {
         let newStatus = req.body.reason
-        console.log(req.body)
+
         if (req.session.passport == undefined) {
             res.redirect("/login")
         } else {
@@ -78,15 +113,16 @@ router.post('/manage/status/edit', async function(req, res) {
                     newStatus = "Launcher under maintenance, please retry again later"
                 }
 
-
                 status.setStatus(newStatus)
+                status.setActive(true)
 
-                res.render("status", { status: status.getStatus(), message: "Launcher maintenance sucessfully activated", messageType: "success" })
+                res.render("status", { status: status.getStatus(), isActive: status.isActive(), message: "Launcher maintenance sucessfully activated", messageType: "success" })
             } else {
                 console.log("Désactivation de la maintenance")
-                status.setActive("")
+                status.setStatus(newStatus)
+                status.setActive(false)
 
-                res.render("status", { status: status.getStatus(), message: "Launcher maintenance sucessfully stopped", messageType: "success" })
+                res.render("status", { status: status.getStatus(), isActive: status.isActive(), message: "Launcher maintenance sucessfully stopped", messageType: "success" })
             }
         }
     })
@@ -105,8 +141,6 @@ router.get('/manage/ignorelist', async function(req, res) {
     if (req.session.passport == undefined) {
         res.redirect("/login")
     } else {
-
-        console.log(list.getIgnoreList())
 
         //   res.send()
         res.render("list", { list: ignorelist, type: "ignore", message: "", messageType: "success" })
@@ -127,7 +161,7 @@ router.post('/manage/ignorelist/delete', async function(req, res) {
         if (list.hasIgnoredItem(item)) {
 
 
-            list.deleteIgnoredItem(item)
+            list.deleteIgnoredItem(item, false)
 
             res.render("list", { list: ignorelist, type: "ignore", message: "Supression réussie", messageType: "success" })
 
@@ -157,7 +191,7 @@ router.post('/manage/ignorelist/add', async function(req, res) {
             return res.render("list", { list: ignorelist, type: "ignore", message: "This file is already in the list", messageType: "error" })
         } else {
 
-            list.addIgnoredItem(item)
+            list.addIgnoredItem(item, false)
 
             res.render("list", { list: ignorelist, type: "ignore", message: "File successfully added to the ignoreList", messageType: "success" })
 
@@ -188,8 +222,8 @@ router.post('/manage/ignorelist/edit', async function(req, res) {
         }
         if (list.hasIgnoredItem(oldItem)) {
 
-            list.deleteIgnoredItem(oldItem)
-            list.addIgnoredItem(newItem)
+            list.deleteIgnoredItem(oldItem, false)
+            list.addIgnoredItem(newItem, false)
             res.render("list", { list: ignorelist, type: "ignore", message: "File successfully edited", messageType: "success" })
 
         } else {
@@ -229,7 +263,9 @@ router.post('/manage/ignorelist/import', function(req, res) {
         let ignoreList = list.getIgnoreList();
 
         if (!req.files || Object.keys(req.files).length === 0) {
+            res.render("list", { list: ignoreList, type: "ignore", message: "No file selected", messageType: "error" });
 
+            return
         }
         if (req.files.file.name.includes(".json") || req.files.file.name.includes(".txt")) {
 

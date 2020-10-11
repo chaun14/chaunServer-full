@@ -1,5 +1,8 @@
+const db = require("../db")
+
+
 let status = "";
-const sql = require('./sql.js')
+let isMaintenanceActive = true
 
 
 function getStatus() {
@@ -7,24 +10,19 @@ function getStatus() {
 }
 
 function isActive() {
-    return status === "" ? false : true;
+    return isMaintenanceActive
 }
 
-function setActive(newStatus) {
-    status = newStatus
-    sql.setNewStatus(newStatus, (err, result) => {
-        err ? console.log('Erreur : ' + err) : null;
-        result ? console.log('Resultat : ' + result) : null;
-    });
+function setActive(newState, init) {
+    isMaintenanceActive = newState
+
+    if (!init) db.settings.update({ maintenance_active: isMaintenanceActive }, { where: { id: 1 } })
 }
 
-async function setStatus(newStatus) {
-    if (!newStatus || newStatus === "") return console.error("New status can't be empty");
+function setStatus(newStatus, init) {
     status = newStatus
-    sql.setNewStatus(newStatus, (err, result) => {
-        err ? console.log('Erreur : ' + err) : null;
-        result ? console.log('Resultat : ' + result) : null;
-    })
+
+    if (!init) db.settings.update({ launcher_status: newStatus }, { where: { id: 1 } })
 }
 
 module.exports = { getStatus, isActive, setActive, setStatus }

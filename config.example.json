@@ -1,0 +1,19 @@
+{
+    "passwordHash": "",
+    "secret": "you need to change me before use",
+    "debug": false,
+    "port": "2332",
+    "database": {
+        "HOST": "localhost",
+        "USER": "",
+        "PASSWORD": "",
+        "DB": "",
+        "dialect": "mysql",
+        "pool": {
+            "max": 5,
+            "min": 0,
+            "acquire": 30000,
+            "idle": 10000
+        }
+    }
+}

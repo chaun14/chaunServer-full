@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#22252a">
     <meta name="robots" content="all,follow">
+
     <!-- Bootstrap CSS-->
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
     <!-- Font Awesome CSS-->
@@ -28,6 +29,8 @@
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
 
+    <!--charts-->
+    <link rel="stylesheet" href="/css/Chart.min.css">
 </head>
 
 <body>
@@ -48,10 +51,12 @@
                 </li>
 
                 <li>
-                    <a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i class="fa fa-list" aria-hidden="true"></i>Lists </a>
+                    <a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i
+                            class="fa fa-list" aria-hidden="true"></i>Lists </a>
                     <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
 
-                        <li><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star" aria-hidden="true"></i>Ignore</a></li>
+                        <li><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star"
+                                    aria-hidden="true"></i>Ignore</a></li>
 
 
                     </ul>
@@ -83,10 +88,11 @@
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="fa fa-area-chart"></i></div><strong>Today's request </strong>
+                                        <div class="icon"><i class="fa fa-area-chart"></i></div><strong>Today's request
+                                        </strong>
                                     </div>
                                     <div class="number dashtext-1">
-                                        <%= todayStats.length %>
+                                        <%= stats[0].count %>
                                     </div>
                                 </div>
 
@@ -96,10 +102,11 @@
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="fa fa-spinner"></i></div><strong>Average time</strong>
+                                        <div class="icon"><i class="fa fa-file-code-o"></i></div>
+                                        <strong>GameFiles</strong>
                                     </div>
                                     <div class="number dashtext-2">
-                                        <%= timeAverage %>s
+                                        <%= gameFiles %>
                                     </div>
                                 </div>
                             </div>
@@ -120,10 +127,11 @@
                             <div class="statistic-block block">
                                 <div class="progress-details d-flex align-items-end justify-content-between">
                                     <div class="title">
-                                        <div class="icon"><i class="fa fa-trash-o"></i></div><strong>Deleted files</strong>
+                                        <div class="icon"><i class="fa fa-file-archive-o"></i></div>
+                                        <strong>JavaFiles</strong>
                                     </div>
                                     <div class="number dashtext-4">
-                                        <%= deletedItemNumber  %>
+                                        <%= javaFiles %>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +140,34 @@
                 </div>
             </section>
 
+            <section class="no-padding-bottom">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="bar-chart block ">
+                                <div class="title">
+                                    <strong>Actualiser la liste de fichiers</strong>
+                                </div>
+                                <form action="/dashboard/manage/refresh" method="post" class="form-inline">
+                                    <div class="form-group">
+                                        <input type="submit" value="Refresh" class="btn btn-primary">
+                                    </div>
+                                </form>
 
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8">
+                            <div class="line-cahrt block">
+                                <div class="title">
+                                    <strong>Lancements du launcher</strong>
+                                </div>
+                                <canvas id="canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
 
 
@@ -150,6 +185,72 @@
 
 
     <%- include('partials/js'); %>
+
+        <script src="/js/Chart.min.js"></script>
+
+        <script>
+            let stats = JSON.parse('<%-JSON.stringify(stats)%>');
+
+            let labels = [];
+            let value = [];
+
+            stats.forEach(day => {
+
+                labels.push(day.date);
+                value.push(day.count);
+            })
+
+            var config = {
+                type: 'line',
+                data: {
+                    labels: labels.reverse(),
+                    datasets: [{
+                        label: 'Nombre de lancements',
+                        backgroundColor: "#864DD9",
+                        borderColor: "#864DD9",
+                        data: value.reverse(),
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: false,
+                        text: 'Chart.js Line Chart'
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Jour'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Lancements'
+                            }
+                        }]
+                    }
+                }
+            };
+
+            window.onload = function() {
+                var ctx = document.getElementById('canvas').getContext('2d');
+                window.myLine = new Chart(ctx, config);
+            };
+        </script>
+
 
 
 

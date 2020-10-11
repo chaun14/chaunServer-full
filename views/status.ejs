@@ -49,10 +49,12 @@
                 </li>
 
                 <li>
-                    <a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i class="fa fa-list" aria-hidden="true"></i>Lists </a>
+                    <a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i
+                            class="fa fa-list" aria-hidden="true"></i>Lists </a>
                     <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
 
-                        <li><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star" aria-hidden="true"></i>Ignore</a></li>
+                        <li><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star"
+                                    aria-hidden="true"></i>Ignore</a></li>
 
 
                     </ul>
@@ -84,37 +86,35 @@
 
                     <div class="checklist-block block">
                         <div class="title"><strong>Maintenance mode</strong></div>
-                        <div class="row d-flex align-items-center ">
+                        <div class="row d-flex align-items-center" style="margin-left: 3px;">
 
-                            <form action="/dashboard/manage/status/edit" method="post" class="form-inline">
+                            <form action="/dashboard/manage/status" method="post" class="form-inline">
 
 
-                                <% if(status == "") {%>
+                                <% if(isActive) {%>
+
+
                                     <label class="switch mr-sm-3">
-                                                 <input id="checkbox" type="checkbox" value="ok" name="checkbox" onclick="showReason()">
-                                                 <span class="slider round"></span>
-                                               </label>
+                                    <input id="checkbox" type="checkbox" value="ok" name="checkbox" onclick="" checked>
+                                    <span class="slider round"></span>
+                                </label>
 
-                                    <div class="form-group">
-                                        <input type="text" id="reason" name="reason" value="" placeholder="reason" class="mr-sm-3 form-control">
-                                    </div>
 
                                     <% } else { %>
                                         <label class="switch mr-sm-3">
-                                        <input id="checkbox" type="checkbox" value="ok" name="checkbox" onclick="showReason()" checked>
-                                        <span class="slider round"></span>
-                                    </label>
+                                    <input id="checkbox" type="checkbox" value="ok" name="checkbox" onclick="">
+                                    <span class="slider round"></span>
+                                </label>
 
-                                        <div class="form-group">
-                                            <input type="text" id="reason" name="reason" value="<%= status %>" placeholder="reason" class="mr-sm-3 form-control">
-                                        </div>
                                         <% } %>
 
 
                                             <div class="form-group">
+                                                <input type="text" id="reason" name="reason" value="<%= status %>" placeholder="reason" class="mr-sm-3 form-control">
+                                            </div>
+
+                                            <div class="form-group">
                                                 <input type="submit" value="Submit" class="btn btn-primary">
-
-
                                             </div>
                             </form>
                         </div>
@@ -136,31 +136,6 @@
 
     <%- include('partials/js'); %>
 
-        <script>
-            function showReason() {
-
-                var checkBox = document.getElementById("checkbox");
-                // Get the output text
-                var text = document.getElementById("reason");
-
-                // If the checkbox is checked, display the output text
-                if (checkBox.checked == true) {
-                    text.style.display = "block";
-                } else {
-                    text.style.display = "none";
-                }
-            }
-        </script>
-        <script>
-            var checkBox = document.getElementById("checkbox");
-            // Get the output text
-            var text = document.getElementById("reason");
-            if (checkBox.checked == true) {
-                text.style.display = "block";
-            } else {
-                text.style.display = "none";
-            }
-        </script>
 
 
 </html>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
-        AlternativeAPI |
+        chaunLauncher |
         <%= type %>list manager</title>
     <meta name="description" content="Manage the <%= type %>List">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -51,15 +51,19 @@
                 </li>
 
                 <li>
-                    <a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i class="fa fa-list" aria-hidden="true"></i>Lists </a>
+                    <a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i
+                            class="fa fa-list" aria-hidden="true"></i>Lists </a>
                     <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
                         <% if(type == "ignore") {%>
 
-                            <li class="active"><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star" aria-hidden="true"></i>Ignore</a></li>
+                            <li class="active"><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star"
+                                    aria-hidden="true"></i>Ignore</a></li>
 
                             <% } else {%>
-                                <li><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star" aria-hidden="true"></i>Ignore</a></li>
-                                <li class="active"><a href="/dashboard/manage/deleteList/"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</a></li>
+                                <li><a href="/dashboard/manage/ignoreList/"><i class="fa fa-star"
+                                    aria-hidden="true"></i>Ignore</a></li>
+                                <li class="active"><a href="/dashboard/manage/deleteList/"><i class="fa fa-trash-o"
+                                    aria-hidden="true"></i>Delete</a></li>
                                 <% } %>
 
                     </ul>
@@ -80,7 +84,7 @@
             <div class="page-header">
                 <div class="container-fluid">
                     <h2 class="h5 no-margin-bottom">
-                        <%= type %> list</h2>
+                        <%= type %>List</h2>
                 </div>
             </div>
 
@@ -113,16 +117,19 @@
                                                         <div class="col-lg-4 d-flex align-items-center">
                                                             <form action="/dashboard/manage/<%= type %>list/delete" method="post">
                                                                 <input type="hidden" name="file" value="<%= item %>" />
-                                                                <button type="submit" value="delete"><i class="fa fa-trash"></i></button>
+                                                                <button type="submit" value="delete"><i
+                                                            class="fa fa-trash"></i></button>
                                                             </form>
-                                                            <button type="submit" data-toggle="modal" data-target="#editItem<%= i %>"><i class="fa fa-pencil"></i></button>
+                                                            <button type="submit" data-toggle="modal" data-target="#editItem<%= i %>"><i
+                                                        class="fa fa-pencil"></i></button>
 
 
                                                             <div id="editItem<%= i %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
                                                                 <div role="document" class="modal-dialog">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header"><strong id="exampleModalLabel" class="modal-title">Edit item</strong>
-                                                                            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                                                                            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
+                                                                        aria-hidden="true">×</span></button>
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <p>Edit an item.</p>
@@ -168,7 +175,8 @@
                         <!--  add item -->
                         <div class="col-lg-6">
                             <div class="messages-block block">
-                                <div class="title"><strong class="d-block">Add item</strong><span class="d-block">Add files to the <%= type %> list</span></div>
+                                <div class="title"><strong class="d-block">Add item</strong><span class="d-block">Add
+                                        files to the <%= type %> list</span></div>
 
                                 <div class="block-body">
                                     <form method="post" action="/dashboard/manage/<%= type %>List/add" class="form-validate mb-4">
@@ -187,13 +195,15 @@
                         <!--  import / export -->
                         <div class="col-lg-6">
                             <div class="messages-block block">
-                                <div class="title"><strong class="d-block">Export</strong><span class="d-block">Export your list to a json file.</span>
+                                <div class="title"><strong class="d-block">Export</strong><span class="d-block">Export
+                                        your list to a json file.</span>
                                     <form action="/dashboard/manage/<%= type %>list/export" method="post">
                                         <input type="submit" value="Export" class="btn btn-primary">
                                     </form>
                                 </div>
 
-                                <div class="title"><strong class="d-block">Import</strong><span class="d-block">Import your old .json file.</span>
+                                <div class="title"><strong class="d-block">Import</strong><span class="d-block">Import
+                                        your old .json file.</span>
                                     <form action="/dashboard/manage/<%= type %>list/import" method="post" accept=".json" encType="multipart/form-data">
 
                                         <input type="file" id="file" name="file" accept=".json" value="Import">
@@ -201,7 +211,6 @@
 
 
                                     </form>
-
                                 </div>
                             </div>
                         </div>

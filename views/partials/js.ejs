@@ -1,24 +1,3 @@
-<script src="/socket.io/socket.io.js">
-</script>
-
-<script>
-    var socket = io();
-
-    socket.on('message', function(msg) {
-
-        Messenger.options = {
-            extraClasses: "messenger-fixed messenger-on-bottom  messenger-on-right",
-            theme: "flat"
-        }
-
-        Messenger().post({
-            message: msg.msg,
-            type: msg.type
-        })
-
-    });
-</script>
-
 <!-- JavaScript files-->
 <script src="/vendor/jquery/jquery.min.js"></script>
 <script src="/vendor/popper.js/umd/popper.min.js">
@@ -30,16 +9,41 @@
 <script src="/vendor/jquery-validation/jquery.validate.min.js"></script>
 <script src="/js/front.js"></script>
 
+<script src="/js/notiflix-2.5.0.min.js"></script>
+<link rel="stylesheet" href="/css/notiflix-2.5.0.min.css">
 
-<!-- Messenger-->
-<script src="https://d19m59y37dris4.cloudfront.net/dark-admin-premium/1-4-5/vendor/messenger-hubspot/build/js/messenger.min.js"></script>
-<script src="https://d19m59y37dris4.cloudfront.net/dark-admin-premium/1-4-5/vendor/messenger-hubspot/build/js/messenger-theme-flat.js"></script>
+<script>
+    Notiflix.Notify.Init({
+        position: 'right-bottom'
+    });
+</script>
+
+
 
 <%   if (message != "") { %>
     <script>
-        Messenger().post({
-            message: "<%= message %>",
-            type: "<%= messageType %>"
-        })
+        if ("<%= messageType %>" == "success") {
+            Notiflix.Notify.Success('<%= message %>');
+        } else if ("<%= messageType %>" == "error") {
+            Notiflix.Notify.Failure('<%= message %>');
+        }
     </script>
     <% }%>
+
+
+
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+            var socket = io();
+
+            socket.on('message', function(msg) {
+
+                if (msg.type == "success") {
+                    Notiflix.Notify.Success(msg.msg);
+                } else if (msg.type == "error") {
+                    Notiflix.Notify.Failure(msg.msg);
+                }
+
+            });
+        </script>

@@ -1,110 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-const md5File = require('md5-file')
-const recursiveReadSync = require('recursive-readdir-sync')
-const fs = require('fs')
-const chokidar = require('chokidar');
-const hasha = require('hasha');
-
 const utils = require("../modules/utils.js")
 const list = require("../modules/listManager.js")
 const status = require("../modules/statusManager.js")
-const sql = require("../modules/sql.js")
+const gameFilesCache = require("../modules/gameFileManager")
+const javaFilesCache = require("../modules/javaFileManager")
 
-const config = require('../config.json')
+
+const config = require('../config.json');
+const db = require('../db/index.js');
 const debug = config.debug;
-
-let fileList = new Map()
-
-/* ================================================== files watcher ==================================================*/
-
-const watcher = chokidar.watch('./files/', {
-    ignored: /(^|[\/\\])\../, // ignore dotfiles
-    persistent: true
-});
-watcher
-// action when a new file is detected
-    .on('add', async path => {
-        hasha.fromFile(path, { algorithm: 'sha1' }).then(hash => {
-
-            const stats = fs.statSync(path);
-
-            fileList.set(path, { "hash": hash, "size": stats.size });
-            if (debug) console.log(`File ${path} (${hash}) has been added ${stats.size}`)
-
-        }).catch(err => {
-            console.error(err)
-
-        })
-    })
-    // action when a file is changed
-    .on('change', async path => {
-
-        hasha.fromFile(path, { algorithm: 'sha1' }).then(hash => {
-            const stats = fs.statSync(path);
-
-            fileList.set(path, { "hash": hash, "size": stats.size });
-            if (debug) console.log(`File ${path} has been changed`)
-        }).catch(err => {
-            console.error(err)
-
-
-        })
-    })
-    // action when a file is deleted
-    .on('unlink', async path => {
-        fileList.delete(path)
-        if (debug) console.log(`File ${path} has been removed`)
-    });
-
-
-/* ================================================== java files watcher ==================================================*/
-
-let javaFileList = new Map()
-
-
-const javaWatcher = chokidar.watch('./java/', {
-    ignored: /(^|[\/\\])\../, // ignore dotfiles
-    persistent: true
-});
-javaWatcher
-// action when a new file is detected
-    .on('add', async path => {
-        hasha.fromFile(path, { algorithm: 'sha1' }).then(hash => {
-
-            const stats = fs.statSync(path);
-
-            javaFileList.set(path, { "hash": hash, "size": stats.size });
-            if (debug) console.log(`File ${path} (${hash}) has been added ${stats.size}`)
-
-        }).catch(err => {
-            console.error(err)
-
-        })
-    })
-    // action when a file is changed
-    .on('change', async path => {
-
-        hasha.fromFile(path, { algorithm: 'sha1' }).then(hash => {
-            const stats = fs.statSync(path);
-
-            javaFileList.set(path, { "hash": hash, "size": stats.size });
-            if (debug) console.log(`File ${path} has been changed`)
-        }).catch(err => {
-            console.error(err)
-
-
-        })
-    })
-    // action when a file is deleted
-    .on('unlink', async path => {
-        javaFileList.delete(path)
-        if (debug) console.log(`File ${path} has been removed`)
-    });
-
-
-
 
 
 
@@ -113,7 +19,10 @@ javaWatcher
 
 
 // quand un launcher get la liste de téléchargement
-router.get('/files', function(req, res) {
+router.get('/files', async function(req, res) {
+
+    let fileList = gameFilesCache.getFiles()
+
 
     const initialTime = Date.now()
     let object = { "files": [] };
@@ -145,7 +54,8 @@ router.get('/files', function(req, res) {
     res.send(object)
 
     // stats
-    sql.newRequest("getfiles", finalTime - initialTime, (err, result) => {})
+    const stats = await db.stats.findOrCreate({ where: { date: Date.now() } })
+    db.stats.update({ count: stats[0].count + 1 }, { where: { date: Date.now() } })
 
 });
 
@@ -153,7 +63,12 @@ router.get('/files', function(req, res) {
 router.get('/java', function(req, res) {
 
     const initialTime = Date.now()
+
     let object = { "files": [] };
+
+    let javaFileList = javaFilesCache.getFiles()
+
+    console.log(javaFileList.size)
 
     // list all Map elements
     for (var [path, values] of javaFileList) {
@@ -191,16 +106,11 @@ router.get('/', function(req, res) {
 
 // gestion de l'activation du launcher
 router.get('/status', function(req, res) {
-    let statusObject = { active: true, message: "" }
-    let actualStatus = status.getStatus()
 
-    if (actualStatus !== "") {
-        statusObject.active = false
-        statusObject.message = actualStatus
-    }
+    let statusObject = { active: status.isActive(), message: status.getStatus() }
 
     res.set('Content-Type', 'text/json');
-    res.send(statusObject)
+    res.send(statusObject);
 });
 
 
@@ -216,7 +126,6 @@ router.get('/ignore', function(req, res) {
     res.set('Content-Type', 'text/json');
     res.send(builder)
 });
-
 
 
 module.exports = router;

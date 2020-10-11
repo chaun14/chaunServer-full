@@ -1,1 +1,1 @@
-# Put your custom files here
+# put your windows jre here
