@@ -25,9 +25,9 @@
         "body-parser": "^1.19.0",
         "colors": "^1.4.0",
         "cookie-parser": "^1.4.5",
-        "ejs": "^3.1.5",
+        "ejs": "^3.1.6",
         "express": "^4.17.1",
-        "express-fileupload": "^1.2.0",
+        "express-fileupload": "^1.2.1",
         "express-session": "^1.17.1",
         "flash": "^1.1.0",
         "hash-files": "^1.1.1",
@@ -38,7 +38,7 @@
         "passport-local": "^1.0.0",
         "recursive-readdir": "^2.2.2",
         "self-reload-json": "^0.4.0",
-        "sequelize": "^6.3.5",
-        "socket.io": "^2.3.0"
+        "sequelize": "^6.6.2",
+        "socket.io": "^2.4.1"
     }
 }
