@@ -1,15 +1,13 @@
 let ignoreList = new Set();
 
-
-const config = require('../config.json')
-const utils = require('./utils.js')
-const db = require("../db")
+const config = require("../config.json");
+const utils = require("./utils.js");
+const db = require("../db");
 
 let debug = config.debug;
 
-
 function getIgnoreList() {
-    return ignoreList
+  return ignoreList;
 }
 
 /**
@@ -17,8 +15,8 @@ function getIgnoreList() {
  * @param {Boolean} isInit manage sql insert
  */
 function addIgnoredItem(item, isInit) {
-    ignoreList.add(item)
-    if (!isInit) db.ignoreList.create({ path: item })
+  ignoreList.add(item);
+  if (!isInit) db.ignoreList.create({ path: item });
 }
 
 /**
@@ -26,8 +24,8 @@ function addIgnoredItem(item, isInit) {
  * @param {Boolean} isInit manage sql insert
  */
 function deleteIgnoredItem(item, isInit) {
-    ignoreList.delete(item)
-    if (!isInit) db.ignoreList.destroy({ where: { path: item } })
+  ignoreList.delete(item);
+  if (!isInit) db.ignoreList.destroy({ where: { path: item } });
 }
 
 /**
@@ -35,8 +33,7 @@ function deleteIgnoredItem(item, isInit) {
  * @returns {boolean} does the item is ignored
  */
 function hasIgnoredItem(item) {
-    return ignoreList.has(item)
+  return ignoreList.has(item);
 }
 
-
-module.exports = { getIgnoreList, addIgnoredItem, deleteIgnoredItem, hasIgnoredItem }
+module.exports = { getIgnoreList, addIgnoredItem, deleteIgnoredItem, hasIgnoredItem };

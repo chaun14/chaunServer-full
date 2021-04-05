@@ -1,10 +1,9 @@
-let javaFiles = new Map()
-
+let javaFiles = new Map();
 
 module.exports.getFiles = () => {
-    return javaFiles
-}
+  return javaFiles;
+};
 
 module.exports.setFiles = (newFiles) => {
-    javaFiles = newFiles
-}
+  javaFiles = newFiles;
+};

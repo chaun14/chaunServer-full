@@ -1,26 +1,24 @@
-const config = require("../config.json")
+const config = require("../config.json");
 const dbConfig = config.database;
 
 const Sequelize = require("sequelize");
 
-
-
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-    host: dbConfig.HOST,
-    dialect: dbConfig.dialect,
-    operatorsAliases: false,
+  host: dbConfig.HOST,
+  dialect: dbConfig.dialect,
+  operatorsAliases: false,
 
-    define: {
-        charset: 'utf8mb4',
-        collate: 'utf8mb4_bin',
-    },
+  define: {
+    charset: "utf8mb4",
+    collate: "utf8mb4_bin",
+  },
 
-    pool: {
-        max: dbConfig.pool.max,
-        min: dbConfig.pool.min,
-        acquire: dbConfig.pool.acquire,
-        idle: dbConfig.pool.idle
-    }
+  pool: {
+    max: dbConfig.pool.max,
+    min: dbConfig.pool.min,
+    acquire: dbConfig.pool.acquire,
+    idle: dbConfig.pool.idle,
+  },
 });
 
 const db = {};
