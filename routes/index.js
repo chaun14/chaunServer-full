@@ -87,7 +87,7 @@ router.get("/", function (req, res) {
 
 // gestion de l'activation du launcher
 router.get("/status", function (req, res) {
-  let statusObject = { active: status.isActive(), message: status.getStatus() };
+  let statusObject = { active: status.isActive(), message: status.getStatus(), version: require("../package.json").version };
 
   res.set("Content-Type", "text/json");
   res.send(statusObject);
