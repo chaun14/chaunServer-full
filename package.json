@@ -39,6 +39,6 @@
         "recursive-readdir": "^2.2.2",
         "self-reload-json": "^0.4.0",
         "sequelize": "^6.6.2",
-        "socket.io": "^2.4.1"
+        "socket.io": "^2.5.0"
     }
 }
